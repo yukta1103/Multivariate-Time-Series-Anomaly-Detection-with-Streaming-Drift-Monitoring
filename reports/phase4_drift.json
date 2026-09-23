@@ -1,0 +1,379 @@
+{
+  "config": {
+    "spacecraft": [
+      "SMAP",
+      "MSL"
+    ],
+    "win_size": 100,
+    "batch_size": 64,
+    "delta": 0.002,
+    "clock": 1,
+    "ks_window": 300,
+    "ks_reference": 2000,
+    "ks_alpha": 0.001,
+    "ks_stride": 25,
+    "fp_steps": 100000,
+    "slice_len": 40000,
+    "sweep": true
+  },
+  "spacecraft": {
+    "SMAP": {
+      "n_scores": 427600,
+      "false_positives_controlled": {
+        "ADWIN": {
+          "alarms": 66,
+          "per_1000": 0.66
+        },
+        "KSWIN": {
+          "alarms": 2,
+          "per_1000": 0.02
+        }
+      },
+      "raw_stream_alarms": {
+        "ADWIN": {
+          "alarms": 23955,
+          "per_1000": 56.02198316183349
+        },
+        "KSWIN": {
+          "alarms": 17064,
+          "per_1000": 39.90645463049579
+        }
+      },
+      "delays": {
+        "offset +0.5 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 104,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 124,
+            "alarms_before_shift": 1
+          }
+        },
+        "offset +1.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 25,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 74,
+            "alarms_before_shift": 1
+          }
+        },
+        "offset +2.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 8,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 1
+          }
+        },
+        "offset -1.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 29,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 1
+          }
+        },
+        "variance x3": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 110,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 99,
+            "alarms_before_shift": 1
+          }
+        },
+        "variance x0.33": {
+          "ADWIN": {
+            "detected": false,
+            "delay": null,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 99,
+            "alarms_before_shift": 1
+          }
+        },
+        "splice from MSL": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 88,
+            "alarms_before_shift": 8
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 74,
+            "alarms_before_shift": 1
+          }
+        }
+      },
+      "blindness": {
+        "Anomaly Transformer": {
+          "roc": 0.5343367897601532,
+          "ADWIN": {
+            "delay": 8,
+            "fp_per_1000": 0.66
+          },
+          "KSWIN": {
+            "delay": 49,
+            "fp_per_1000": 0.02
+          }
+        },
+        "LSTM-AE baseline": {
+          "roc": 0.45747800138152356,
+          "ADWIN": {
+            "delay": 15,
+            "fp_per_1000": 0.75
+          },
+          "KSWIN": {
+            "delay": 49,
+            "fp_per_1000": 0.0
+          }
+        }
+      },
+      "sweep": {
+        "ADWIN": {
+          "0.05": {
+            "fp_per_1000": 1.48,
+            "delay": 21
+          },
+          "0.01": {
+            "fp_per_1000": 0.97,
+            "delay": 23
+          },
+          "0.002": {
+            "fp_per_1000": 0.66,
+            "delay": 25
+          },
+          "0.0001": {
+            "fp_per_1000": 0.33,
+            "delay": 39
+          },
+          "1e-06": {
+            "fp_per_1000": 0.08,
+            "delay": 49
+          }
+        },
+        "KSWIN": {
+          "0.05": {
+            "fp_per_1000": 1.98,
+            "delay": 49
+          },
+          "0.01": {
+            "fp_per_1000": 0.26,
+            "delay": 74
+          },
+          "0.001": {
+            "fp_per_1000": 0.02,
+            "delay": 74
+          },
+          "1e-05": {
+            "fp_per_1000": 0.0,
+            "delay": 74
+          },
+          "1e-08": {
+            "fp_per_1000": 0.0,
+            "delay": 99
+          }
+        }
+      }
+    },
+    "MSL": {
+      "n_scores": 73700,
+      "false_positives_controlled": {
+        "ADWIN": {
+          "alarms": 23,
+          "per_1000": 0.23
+        },
+        "KSWIN": {
+          "alarms": 0,
+          "per_1000": 0.0
+        }
+      },
+      "raw_stream_alarms": {
+        "ADWIN": {
+          "alarms": 4248,
+          "per_1000": 57.63907734056988
+        },
+        "KSWIN": {
+          "alarms": 2935,
+          "per_1000": 39.8236092265943
+        }
+      },
+      "delays": {
+        "offset +0.5 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 201,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "offset +1.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 27,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "offset +2.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 5,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "offset -1.0 sd": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 37,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "variance x3": {
+          "ADWIN": {
+            "detected": true,
+            "delay": 18,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "variance x0.33": {
+          "ADWIN": {
+            "detected": false,
+            "delay": null,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        },
+        "splice from SMAP": {
+          "ADWIN": {
+            "detected": false,
+            "delay": null,
+            "alarms_before_shift": 3
+          },
+          "KSWIN": {
+            "detected": true,
+            "delay": 49,
+            "alarms_before_shift": 0
+          }
+        }
+      },
+      "blindness": {
+        "Anomaly Transformer": {
+          "roc": 0.46876215643921026,
+          "ADWIN": {
+            "delay": 5,
+            "fp_per_1000": 0.23
+          },
+          "KSWIN": {
+            "delay": 49,
+            "fp_per_1000": 0.0
+          }
+        },
+        "LSTM-AE baseline": {
+          "roc": 0.6300800191477502,
+          "ADWIN": {
+            "delay": 4,
+            "fp_per_1000": 1.52
+          },
+          "KSWIN": {
+            "delay": 49,
+            "fp_per_1000": 0.02
+          }
+        }
+      },
+      "sweep": {
+        "ADWIN": {
+          "0.05": {
+            "fp_per_1000": 0.65,
+            "delay": 13
+          },
+          "0.01": {
+            "fp_per_1000": 0.41,
+            "delay": 26
+          },
+          "0.002": {
+            "fp_per_1000": 0.23,
+            "delay": 27
+          },
+          "0.0001": {
+            "fp_per_1000": 0.09,
+            "delay": 32
+          },
+          "1e-06": {
+            "fp_per_1000": 0.01,
+            "delay": 53
+          }
+        },
+        "KSWIN": {
+          "0.05": {
+            "fp_per_1000": 1.32,
+            "delay": 49
+          },
+          "0.01": {
+            "fp_per_1000": 0.17,
+            "delay": 49
+          },
+          "0.001": {
+            "fp_per_1000": 0.0,
+            "delay": 49
+          },
+          "1e-05": {
+            "fp_per_1000": 0.0,
+            "delay": 74
+          },
+          "1e-08": {
+            "fp_per_1000": 0.0,
+            "delay": 74
+          }
+        }
+      }
+    }
+  }
+}

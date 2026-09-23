@@ -1,0 +1,92 @@
+{
+  "spacecraft": "MSL",
+  "n_points": 73700,
+  "positive_rate": 0.10537313432835821,
+  "results": [
+    {
+      "name": "Anomaly Transformer",
+      "raw": {
+        "precision": 0.10598020346439373,
+        "recall": 0.9926603141900592,
+        "f1": 0.1915136759993044,
+        "threshold": -1160.1521935754113
+      },
+      "point_adjusted": {
+        "precision": 0.9349716446124764,
+        "recall": 0.9553180530517641,
+        "f1": 0.9450353480670022
+      },
+      "inflation": 4.934558031617724,
+      "roc_auc_pre_adjustment": 0.46876215643921026,
+      "pr_auc_pre_adjustment": 0.0973371189190381
+    },
+    {
+      "name": "ablation: recon only",
+      "raw": {
+        "precision": 0.12864125122189637,
+        "recall": 0.7625547257275302,
+        "f1": 0.22014460697756547,
+        "threshold": 0.0010569170938927804
+      },
+      "point_adjusted": {
+        "precision": 0.6880887087158698,
+        "recall": 0.7431109966520731,
+        "f1": 0.7145421903052065
+      },
+      "inflation": 3.2457855775591367,
+      "roc_auc_pre_adjustment": 0.5929564855438321,
+      "pr_auc_pre_adjustment": 0.14785746300451674
+    },
+    {
+      "name": "LSTM-AE baseline",
+      "raw": {
+        "precision": 0.16412509692426983,
+        "recall": 0.7359000772598506,
+        "f1": 0.2683917627444995,
+        "threshold": 0.01057970967494301
+      },
+      "point_adjusted": {
+        "precision": 0.908660351826793,
+        "recall": 0.8646664949781097,
+        "f1": 0.8861177091580892
+      },
+      "inflation": 3.301583104104597,
+      "roc_auc_pre_adjustment": 0.6300800191477502,
+      "pr_auc_pre_adjustment": 0.1561169165388251
+    },
+    {
+      "name": "random (uniform)",
+      "raw": {
+        "precision": 0.10543829625404069,
+        "recall": 0.9996137007468452,
+        "f1": 0.19075584824061334,
+        "threshold": 0.0011059659264545554
+      },
+      "point_adjusted": {
+        "precision": 0.8501239576290286,
+        "recall": 0.9714138552665464,
+        "f1": 0.9067307692307692
+      },
+      "inflation": 4.753357643258455,
+      "roc_auc_pre_adjustment": 0.4983957396396232,
+      "pr_auc_pre_adjustment": 0.10519308914406865
+    },
+    {
+      "name": "all-positive (trivial)",
+      "raw": {
+        "precision": 0.10537313432835821,
+        "recall": 1.0,
+        "f1": 0.19065622468268972,
+        "threshold": 0.0
+      },
+      "point_adjusted": {
+        "precision": 0.10537313432835821,
+        "recall": 1.0,
+        "f1": 0.19065622468268972
+      },
+      "inflation": 1.0,
+      "roc_auc_pre_adjustment": 0.5,
+      "pr_auc_pre_adjustment": 0.10537313432835821
+    }
+  ]
+}

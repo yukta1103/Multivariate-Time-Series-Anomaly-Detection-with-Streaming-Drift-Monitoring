@@ -1,0 +1,61 @@
+# ---- Data (never commit; see scripts/01_download_data.py to regenerate) ----
+# Leading slash anchors these to the repo root. Without it, a bare "data/"
+# also matches src/mtsad/data/ -- which silently excluded the entire Phase 1
+# data pipeline from source control.
+/data/
+!/data/.gitkeep
+
+# ---- Model checkpoints & run artifacts ----
+/checkpoints/
+/runs/
+/outputs/
+*.pt
+*.pth
+*.ckpt
+*.h5
+
+# ---- Reports: keep the directory, ignore generated figures ----
+/reports/figures/*
+!/reports/figures/.gitkeep
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.installed.cfg
+
+# ---- Environments ----
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# ---- Testing / coverage ----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Notebooks ----
+.ipynb_checkpoints/
+
+# ---- Streamlit ----
+.streamlit/secrets.toml
+
+# ---- Editors / OS ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

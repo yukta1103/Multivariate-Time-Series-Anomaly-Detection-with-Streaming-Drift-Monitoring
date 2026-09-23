@@ -1,0 +1,53 @@
+# Defaults for the SMAP/MSL anomaly-detection pipeline.
+# Phase 1 uses the `data` block; later phases append their own.
+
+data:
+  root: data
+  spacecraft: SMAP        # SMAP | MSL
+  mode: concat            # concat = literature-comparable; entity = per-channel
+  chan_id: null           # required when mode == entity
+
+  win_size: 100           # Anomaly Transformer default
+  train_stride: 1
+  test_stride: null       # null => win_size, i.e. non-overlapping test windows
+  normalize: standard     # standard | minmax | none
+  val_fraction: 0.2       # chronological tail of train, never random
+
+  # Concat mode splices unrelated channels end-to-end. Setting this true drops
+  # windows that span a join (~1.2% on SMAP, ~3.5% on MSL). Left false so the
+  # headline numbers stay comparable to published results.
+  drop_boundary_windows: false
+
+loader:
+  batch_size: 64
+  num_workers: 0          # >0 needs an if __name__ == "__main__" guard on Windows
+
+# Config A, approved after the VRAM probe. Measured 0.93 GB of 8 GB at batch
+# 64 (the analytic estimate of 2.4-3.0 GB was ~3x too conservative), so Plan B
+# was not needed. The paper's own batch 256 also fits, at 3.54 GB.
+model:
+  d_model: 512
+  n_heads: 8
+  e_layers: 3
+  d_ff: 512
+  dropout: 0.0
+  activation: gelu
+
+train:
+  epochs: 3               # reference uses 3 for SMAP/MSL
+  lr: 1.0e-4
+  k: 3.0                  # association-discrepancy weight
+  grad_accum: 1           # raised automatically if the VRAM probe demands it
+  grad_clip: 1.0
+  patience: 3
+  lr_halve_each_epoch: true
+  seed: 42
+
+  # Attention and FFN run under fp16 autocast (~2.7x on sm_89). The
+  # association KL is forced to fp32 in losses.py: it takes log() of near-zero
+  # probabilities and goes NaN in fp16 within a few hundred steps, silently.
+  amp: true
+  nan_check_steps: 500    # hard failure on non-finite loss over this window
+
+memory:
+  budget_gb: 6.5          # exceed this and the probe drops to batch 32 x2

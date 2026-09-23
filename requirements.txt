@@ -1,0 +1,20 @@
+# Core
+numpy>=1.26,<2.0
+pandas>=2.0
+scipy>=1.11
+scikit-learn>=1.4
+
+# Model (Phase 2). Install the CUDA build for GPU:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+torch>=2.5
+
+# Plots / dashboard
+matplotlib>=3.8
+streamlit>=1.35
+plotly>=5.20
+
+# Config
+pyyaml>=6.0
+
+# Dev
+pytest>=8.0

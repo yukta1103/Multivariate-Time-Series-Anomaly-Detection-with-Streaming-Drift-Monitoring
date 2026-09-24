@@ -55,6 +55,7 @@ htmlcov/
 # ---- Editors / OS ----
 .vscode/
 .idea/
+.claude/
 *.swp
 .DS_Store
 Thumbs.db

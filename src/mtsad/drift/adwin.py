@@ -52,6 +52,19 @@ class ADWINConfig:
     against it. Set to 1 for exact timing at higher cost.
     """
 
+    cooldown: int = 0
+    """Suppress further alarms for this many steps after one fires.
+
+    ADWIN drops one bucket per cut and keeps cutting on subsequent steps, so a
+    single conceptual change surfaces as a burst of alarms -- 101 of them in
+    1700 steps on a single SMAP channel at delta=0.002. That is correct
+    behaviour for the algorithm and useless on a dashboard.
+
+    Defaults to 0, which is the per-crossing behaviour the Phase 4 false
+    positive rates were measured under; leaving it there keeps those numbers
+    comparable. The dashboard raises it to group a burst into one event.
+    """
+
 
 class ADWIN(DriftDetector):
     def __init__(self, config: ADWINConfig | None = None, **overrides) -> None:
@@ -75,6 +88,7 @@ class ADWIN(DriftDetector):
         self._total = 0.0
         self._total_sq = 0.0
         self._n_seen = 0
+        self._suppress_until = -1
         self._last_statistic = float("nan")
 
     @property
@@ -111,7 +125,16 @@ class ADWIN(DriftDetector):
             return False
         if self._n_seen % self.cfg.clock != 0:
             return False
-        return self._shrink()
+
+        # The window still shrinks during the refractory period -- only the
+        # alarm is suppressed, so adaptation is unaffected.
+        fired = self._shrink()
+        if not fired:
+            return False
+        if self._n_seen <= self._suppress_until:
+            return False
+        self._suppress_until = self._n_seen + self.cfg.cooldown
+        return True
 
     def _insert(self, value: float) -> None:
         self._buckets.append([1.0, value, value * value])

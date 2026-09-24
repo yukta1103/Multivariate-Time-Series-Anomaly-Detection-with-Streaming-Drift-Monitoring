@@ -87,6 +87,31 @@ def test_adwin_smaller_delta_is_more_conservative():
     assert tight <= loose
 
 
+def test_adwin_cooldown_defaults_to_zero():
+    """Phase 4's false-positive rates were measured per-crossing."""
+    assert ADWINConfig().cooldown == 0
+
+
+def test_adwin_cooldown_groups_an_alarm_burst():
+    stream = np.concatenate([stationary(1500, 0), stationary(1500, 1, loc=5.0)])
+    burst = len(ADWIN(clock=1, cooldown=0).run(stream))
+    grouped = len(ADWIN(clock=1, cooldown=200).run(stream))
+    assert burst > grouped, "cooldown should collapse the burst"
+    assert grouped >= 1, "but it must not suppress the event entirely"
+
+
+def test_adwin_cooldown_does_not_stop_the_window_adapting():
+    """Only the alarm is suppressed; the window must still shrink."""
+    stream = np.concatenate([stationary(1000, 0), stationary(500, 1, loc=8.0)])
+    quiet = ADWIN(clock=1, cooldown=10_000)
+    for x in stream:
+        quiet.update(x)
+    loud = ADWIN(clock=1, cooldown=0)
+    for x in stream:
+        loud.update(x)
+    assert quiet.width == loud.width
+
+
 def test_adwin_rejects_bad_config():
     with pytest.raises(ValueError):
         ADWIN(delta=0.0)

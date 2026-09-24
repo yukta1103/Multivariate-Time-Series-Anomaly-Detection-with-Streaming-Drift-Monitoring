@@ -100,6 +100,65 @@ def test_adwin_cooldown_groups_an_alarm_burst():
     assert grouped >= 1, "but it must not suppress the event entirely"
 
 
+def _two_step_stream(gap: int, seed: int = 0) -> np.ndarray:
+    """Two distinct regimes: 0 -> 5 at t=1000, then 5 -> 15 at t=1000+gap."""
+    s = np.random.default_rng(seed).normal(0.0, 1.0, 3000)
+    s[1000:] += 5.0
+    s[1000 + gap:] += 10.0
+    return s
+
+
+@pytest.mark.parametrize("gap", [25, 50, 75, 100, 150, 250])
+def test_adwin_cooldown_does_not_swallow_a_distinct_second_event(gap):
+    """A second regime inside the refractory window must still alarm.
+
+    Regression: a purely time-based cooldown lost these outright rather than
+    delaying them. The window adapted to the second step (mean reached 14.69
+    by t=1100) but by the time the cooldown expired there was nothing left to
+    cut on, so no alarm ever fired.
+    """
+    stream = _two_step_stream(gap)
+    t2 = 1000 + gap
+    events = ADWIN(clock=1, cooldown=200).run(stream)
+    after = [e.index for e in events if e.index >= t2]
+    assert after, f"second event at t={t2} was swallowed by the cooldown"
+    assert after[0] - t2 < 100, f"detected but {after[0] - t2} steps late"
+
+
+@pytest.mark.parametrize("gap", [25, 50, 100, 250])
+def test_adwin_cooldown_still_collapses_the_first_event_burst(gap):
+    """The break-through rule must not undo the burst grouping."""
+    stream = _two_step_stream(gap)
+    t2 = 1000 + gap
+    burst = [e.index for e in ADWIN(clock=1, cooldown=0).run(stream)
+             if 1000 <= e.index < t2]
+    grouped = [e.index for e in ADWIN(clock=1, cooldown=200).run(stream)
+               if 1000 <= e.index < t2]
+    if len(burst) > 2:
+        assert len(grouped) < len(burst)
+
+
+def test_adwin_cooldown_break_can_be_disabled():
+    """cooldown_break_sigmas=0 gives a purely time-based cooldown.
+
+    Pins the documented trade-off: with the break-through disabled, the
+    second event really is suppressed.
+    """
+    stream = _two_step_stream(100)
+    events = ADWIN(clock=1, cooldown=200, cooldown_break_sigmas=0).run(stream)
+    assert not [e.index for e in events if e.index >= 1100]
+
+
+def test_adwin_cooldown_break_ignores_same_level_noise():
+    """Noise around one level must not repeatedly break the cooldown."""
+    s = np.random.default_rng(2).normal(0.0, 1.0, 4000)
+    s[2000:] += 6.0
+    loose = len(ADWIN(clock=1, cooldown=0).run(s))
+    strict = len(ADWIN(clock=1, cooldown=300).run(s))
+    assert strict < loose
+    assert strict <= 4, f"break-through fired {strict} times on one event"
+
+
 def test_adwin_cooldown_does_not_stop_the_window_adapting():
     """Only the alarm is suppressed; the window must still shrink."""
     stream = np.concatenate([stationary(1000, 0), stationary(500, 1, loc=8.0)])

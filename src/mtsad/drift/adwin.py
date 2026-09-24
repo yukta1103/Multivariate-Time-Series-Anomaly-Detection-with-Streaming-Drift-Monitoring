@@ -65,6 +65,24 @@ class ADWINConfig:
     comparable. The dashboard raises it to group a burst into one event.
     """
 
+    cooldown_break_sigmas: float = 3.0
+    """Let a genuinely distinct second change interrupt the refractory period.
+
+    A plain time-based cooldown silently swallows real events. Measured: with
+    ``cooldown=200``, a stream stepping 0 -> 5 at t=1000 and 5 -> 15 at t=1050
+    raised *zero* alarms for the second step. The window adapted to it -- mean
+    reached 14.69 by t=1100 -- but by the time the cooldown expired there was
+    nothing left to cut on, so the event was lost rather than delayed.
+
+    So suppression is conditional: a cut inside the refractory period still
+    alarms if the window mean has moved more than this many standard
+    deviations from where it sat at the last alarm. Repeat cuts from one
+    change converge on the same level and stay collapsed; a second, distinct
+    regime breaks through.
+
+    Set to 0 to disable and get a purely time-based cooldown.
+    """
+
 
 class ADWIN(DriftDetector):
     def __init__(self, config: ADWINConfig | None = None, **overrides) -> None:
@@ -89,6 +107,8 @@ class ADWIN(DriftDetector):
         self._total_sq = 0.0
         self._n_seen = 0
         self._suppress_until = -1
+        self._mean_at_alarm: float | None = None
+        self._sigma_at_alarm: float = 0.0
         self._last_statistic = float("nan")
 
     @property
@@ -131,10 +151,30 @@ class ADWIN(DriftDetector):
         fired = self._shrink()
         if not fired:
             return False
-        if self._n_seen <= self._suppress_until:
+        if self._n_seen <= self._suppress_until and not self._is_distinct_change():
             return False
+
         self._suppress_until = self._n_seen + self.cfg.cooldown
+        self._mean_at_alarm = self.mean
+        self._sigma_at_alarm = math.sqrt(self.variance)
         return True
+
+    def _is_distinct_change(self) -> bool:
+        """Has the window moved to a genuinely different level since the last
+        alarm, rather than merely re-cutting toward the same one?
+
+        Scaled by the spread recorded *at the last alarm*, not the current
+        one. Immediately after a cut the window still holds a mixture of the
+        old and new regimes, so its variance is inflated precisely when this
+        test needs to fire -- using it made the bar unreachable and let a
+        second event at t+100 slip through.
+        """
+        if self._mean_at_alarm is None or self.cfg.cooldown_break_sigmas <= 0:
+            return False
+        moved = abs(self.mean - self._mean_at_alarm)
+        if self._sigma_at_alarm <= 1e-12:
+            return moved > 0.0
+        return moved > self.cfg.cooldown_break_sigmas * self._sigma_at_alarm
 
     def _insert(self, value: float) -> None:
         self._buckets.append([1.0, value, value * value])

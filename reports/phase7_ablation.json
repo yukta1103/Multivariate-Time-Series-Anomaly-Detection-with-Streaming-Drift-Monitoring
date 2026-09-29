@@ -1,0 +1,46 @@
+[
+  {
+    "spacecraft": "SMAP",
+    "schedule": "const",
+    "assoc_roc": 0.5664369179150771,
+    "recon_roc": 0.4333602777085001,
+    "assoc_minus_recon": 0.133076640206577,
+    "assoc_raw_f1": 0.2676091320333718,
+    "recon_raw_f1": 0.22681506792509165,
+    "assoc_pa_f1": 0.9624931988261842,
+    "delta_at_3_epochs": 0.13577118281554407
+  },
+  {
+    "spacecraft": "SMAP",
+    "schedule": "halve",
+    "assoc_roc": 0.4169639365146745,
+    "recon_roc": 0.39143847862024184,
+    "assoc_minus_recon": 0.025525457894432668,
+    "assoc_raw_f1": 0.22681506792509165,
+    "recon_raw_f1": 0.22681506792509165,
+    "assoc_pa_f1": 0.9668308761944215,
+    "delta_at_3_epochs": 0.13577118281554407
+  },
+  {
+    "spacecraft": "MSL",
+    "schedule": "const",
+    "assoc_roc": 0.4956490566843387,
+    "recon_roc": 0.5561824994287008,
+    "assoc_minus_recon": -0.06053344274436212,
+    "assoc_raw_f1": 0.19202472952086555,
+    "recon_raw_f1": 0.19949866021263724,
+    "assoc_pa_f1": 0.8978631640854734,
+    "delta_at_3_epochs": -0.1241943291046218
+  },
+  {
+    "spacecraft": "MSL",
+    "schedule": "halve",
+    "assoc_roc": 0.5068024022977238,
+    "recon_roc": 0.5905663680365372,
+    "assoc_minus_recon": -0.0837639657388134,
+    "assoc_raw_f1": 0.1935146052287093,
+    "recon_raw_f1": 0.21958212237844632,
+    "assoc_pa_f1": 0.9376286008230452,
+    "delta_at_3_epochs": -0.1241943291046218
+  }
+]
